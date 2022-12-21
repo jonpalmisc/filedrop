@@ -1,0 +1,6 @@
+/target
+
+public/
+storage/
+
+filedrop.toml
