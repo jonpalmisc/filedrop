@@ -26,7 +26,7 @@ command needed to retrieve the file; you can send this to the intended
 recipient. A sample response is shown below.
 
 ```
-curl -O http://filedrop.example.org/get/EAE96A46968A47CF813963E42FE3C146-example.txt
+curl -O http://filedrop.example.org/get/962F3F8D90A8-example.txt
 ```
 
 > The URL shown in the `curl` command can also be accessed via the browser.
