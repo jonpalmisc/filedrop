@@ -39,11 +39,8 @@ names less guessable.
 ## Deployment
 
 Use `cargo` to build Filedrop, then run the resulting `filedrop` executable to
-start the server. A `filedrop.toml` configuration file is expected to be found
-your working directory.
-
-See [`sample.toml`](sample.toml) for an example configuration with all options
-present and documented.
+start the server. Filedrop can be configured through a handful of environment
+variables; run `filedrop -h` for more information.
 
 ## License
 
