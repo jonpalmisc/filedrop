@@ -47,7 +47,7 @@ pub async fn upload(
     let reply = format!(
         "\n\n{}\n\ncurl -O http://{}/get/{}\n\n{}\n\n",
         BANNER_RULE,
-        settings.server_string(),
+        settings.host_string(),
         output_name,
         BANNER_RULE
     );

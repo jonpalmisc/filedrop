@@ -1,56 +1,80 @@
-use std::{net::SocketAddr, path::PathBuf, str::FromStr};
+use std::{env, net::SocketAddr, path::PathBuf, str::FromStr};
 
-use config::{Config, ConfigError};
 use serde::Deserialize;
 
 /// Program configuration.
 #[derive(Debug, Deserialize)]
 pub struct Settings {
-    /// Address to listen on.
-    bind_address: String,
+    /// IP address to listen on.
+    ip: String,
 
     /// Port to listen on.
-    bind_port: u32,
+    port: u32,
 
     /// Domain name this server is accessible from.
-    server_name: String,
+    host: String,
 
     /// Path to store uploaded files in.
     storage_path: String,
 
     /// Maximum request size.
-    max_request_size: usize,
+    size_limit: usize,
+}
+
+/// Grouped environment variable name constants.
+pub struct Variable;
+
+impl Variable {
+    const IP_KEY: &str = "FILEDROP_IP";
+    const PORT_KEY: &str = "FILEDROP_PORT";
+    const HOST_KEY: &str = "FILEDROP_HOST";
+    const STORAGE_KEY: &str = "FILEDROP_STORAGE";
+    const SIZE_LIMIT_KEY: &str = "FILEDROP_SIZE_LIMIT";
+}
+
+macro_rules! env_str {
+    ($name:expr, $default:expr) => {
+        env::var($name).unwrap_or($default.to_string())
+    };
+}
+
+macro_rules! env_num {
+    ($name:expr, $default:expr) => {
+        env::var($name)
+            .unwrap_or("".to_string())
+            .parse()
+            .unwrap_or($default)
+    };
 }
 
 impl Settings {
     /// Load the config from disk or use the default.
-    pub fn load() -> Result<Self, ConfigError> {
-        match Config::builder()
-            .add_source(config::File::with_name("filedrop"))
-            .add_source(config::Environment::with_prefix("FILEDROP"))
-            .build()
-        {
-            Ok(config) => config.try_deserialize(),
-            _ => Ok(Self::default()),
+    pub fn load() -> Self {
+        Self {
+            ip: env_str!(Variable::IP_KEY, "127.0.0.1"),
+            port: env_num!(Variable::PORT_KEY, 8000),
+            host: env_str!(Variable::HOST_KEY, "localhost"),
+            storage_path: env_str!(Variable::STORAGE_KEY, "storage"),
+            size_limit: env_num!(Variable::SIZE_LIMIT_KEY, 50 * 1024 * 1024 /* 50 MiB */),
         }
     }
 
     /// Get the listen address string (with port).
     pub fn listen_string(&self) -> String {
-        format!("{}:{}", self.bind_address, self.bind_port)
+        format!("{}:{}", self.ip, self.port)
     }
 
-    /// Get the server name string (with port if non-standard).
-    pub fn server_string(&self) -> String {
-        if self.bind_port == 80 {
-            self.server_name.clone()
+    /// Get the host name string (with port if non-standard).
+    pub fn host_string(&self) -> String {
+        if self.port == 80 {
+            self.host.clone()
         } else {
-            format!("{}:{}", self.server_name, self.bind_port)
+            format!("{}:{}", self.host, self.port)
         }
     }
 
     /// Get the configured listening address.
-    pub fn listen_addr(&self) -> Result<SocketAddr, <SocketAddr as FromStr>::Err> {
+    pub fn listen_address(&self) -> Result<SocketAddr, <SocketAddr as FromStr>::Err> {
         self.listen_string().parse()
     }
 
@@ -59,19 +83,8 @@ impl Settings {
         PathBuf::from(&self.storage_path)
     }
 
-    pub fn max_request_size(&self) -> usize {
-        self.max_request_size
-    }
-}
-
-impl Default for Settings {
-    fn default() -> Self {
-        Self {
-            bind_address: "127.0.0.1".to_string(),
-            bind_port: 8000,
-            storage_path: "storage".to_string(),
-            server_name: "localhost".to_string(),
-            max_request_size: 104857600,
-        }
+    /// Get the request size limit.
+    pub fn size_limit(&self) -> usize {
+        self.size_limit
     }
 }
