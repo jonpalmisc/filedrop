@@ -10,7 +10,8 @@ your favorite CLI HTTP tool.
 This is alpha software at best. It was written in a few hours. Filedrop is meant
 to be self-hosted and used amongst trusted peers. There are ZERO security
 checks built into Filedrop. It is your responsibility to secure the environment
-this runs in.
+this runs in. At a minumum, containerizing Filedrop with Docker using the
+provided Dockerfile is recommended.
 
 Do NOT use this in production yet. Seriously.
 
@@ -41,6 +42,9 @@ names less guessable.
 Use `cargo` to build Filedrop, then run the resulting `filedrop` executable to
 start the server. Filedrop can be configured through a handful of environment
 variables; run `filedrop -h` for more information.
+
+For convenience, Filedrop can also be built as a Docker image and containerized
+using the provided Dockerfile.
 
 ## License
 
