@@ -13,19 +13,41 @@ use axum::{
     Router, Server,
 };
 
-use std::sync::Arc;
+use std::{sync::Arc, env};
+
+use crate::settings::Variable;
+
+/// Show usage information and exit.
+fn show_usage_and_exit() -> ! {
+    eprintln!("Minimal, CLI-friendly file transfer service\n");
+
+    eprintln!("Options:");
+    eprintln!("  {:<22}IP to listen on", Variable::IP_KEY);
+    eprintln!("  {:<22}Port to listen on", Variable::PORT_KEY);
+    eprintln!("  {:<22}Host name to use in URLs", Variable::HOST_KEY);
+    eprintln!("  {:<22}Path to upload storage directory", Variable::STORAGE_KEY);
+    eprintln!("  {:<22}Upload size limit (in bytes)", Variable::SIZE_LIMIT_KEY);
+
+    eprintln!("\nAll options must be configured through environment variables.");
+
+    std::process::exit(1);
+}
 
 #[tokio::main]
 async fn main() {
+    // Treat any arguments at all as a cry for help.
+    if let Some(_) = env::args().nth(1) {
+        show_usage_and_exit();
+    }
+
+    // Initialize logging subsystem.
     let trace_sub = FmtSubscriber::builder()
         .with_max_level(Level::INFO)
         .finish();
-
     tracing::subscriber::set_global_default(trace_sub).unwrap();
 
     let settings = Arc::new(Settings::load());
-
-    let listen_addr = match settings.listen_address() {
+    let listen_address = match settings.listen_address() {
         Ok(a) => a,
         _ => {
             error!("Failed to parse listen address.");
@@ -49,7 +71,7 @@ async fn main() {
         settings.storage_path().display()
     );
 
-    Server::bind(&listen_addr)
+    Server::bind(&listen_address)
         .serve(router.into_make_service())
         .await
         .unwrap();

@@ -25,11 +25,11 @@ pub struct Settings {
 pub struct Variable;
 
 impl Variable {
-    const IP_KEY: &str = "FILEDROP_IP";
-    const PORT_KEY: &str = "FILEDROP_PORT";
-    const HOST_KEY: &str = "FILEDROP_HOST";
-    const STORAGE_KEY: &str = "FILEDROP_STORAGE";
-    const SIZE_LIMIT_KEY: &str = "FILEDROP_SIZE_LIMIT";
+    pub const IP_KEY: &str = "FILEDROP_IP";
+    pub const PORT_KEY: &str = "FILEDROP_PORT";
+    pub const HOST_KEY: &str = "FILEDROP_HOST";
+    pub const STORAGE_KEY: &str = "FILEDROP_STORAGE";
+    pub const SIZE_LIMIT_KEY: &str = "FILEDROP_SIZE_LIMIT";
 }
 
 macro_rules! env_str {
