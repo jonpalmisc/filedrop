@@ -1,23 +1,21 @@
 # Filedrop
 
-Filedrop is a minimal, CLI-friendly file sharing service. It is designed to
-facilitate quick file uploads/downloads from the terminal. There are no user
-accounts nor authentication; simply upload and download files with `curl` or
-your favorite CLI HTTP tool.
+Filedrop is a minimal, CLI-friendly file transfer service. It is designed to
+facilitate quick file uploads/downloads from the terminal.
 
 ## Security
 
-This is alpha software at best. It was written in a few hours. Filedrop is meant
-to be self-hosted and used amongst trusted peers. There are ZERO security
-checks built into Filedrop. It is your responsibility to secure the environment
-this runs in. At a minumum, containerizing Filedrop with Docker using the
-provided Dockerfile is recommended.
+This is alpha software at best. It was written in a few hours. There are ZERO
+security checks. It is your responsibility to secure the environment Filedrop
+runs in. At a minumum, containerizing Filedrop with Docker using the provided
+Dockerfile is recommended.
 
-Do NOT use this in production yet. Seriously.
+Do **NOT** use this in production yet. Seriously.
 
 ## Usage
 
-Files can be easily uploaded using `curl`:
+Filedrop does not have a concept of accounts or users. Files are simply uploaded
+using `curl`:
 
 ```sh
 curl -T example.txt filedrop.example.org
@@ -33,9 +31,8 @@ curl -O http://filedrop.example.org/get/EAE96A46968A47CF813963E42FE3C146-example
 
 > The URL shown in the `curl` command can also be accessed via the browser.
 
-You will notice that a random prefix has prepended to the original filename;
-this is done in order to prevent naming conflicts and to make uploaded file
-names less guessable.
+As seen above, random prefixes are prepended to uploaded file names to prevent
+naming conflicts and the ability to guess filenames.
 
 ## Deployment
 
