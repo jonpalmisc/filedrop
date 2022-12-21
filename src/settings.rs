@@ -32,12 +32,14 @@ impl Variable {
     pub const SIZE_LIMIT_KEY: &str = "FILEDROP_SIZE_LIMIT";
 }
 
+/// Get the value of an environment variable as a string.
 macro_rules! env_str {
     ($name:expr, $default:expr) => {
         env::var($name).unwrap_or($default.to_string())
     };
 }
 
+/// Get the value of an environment variable as a number.
 macro_rules! env_num {
     ($name:expr, $default:expr) => {
         env::var($name)
@@ -48,8 +50,9 @@ macro_rules! env_num {
 }
 
 impl Settings {
-    /// Load the config from disk or use the default.
-    pub fn load() -> Self {
+    /// Load the config from the environment; missing or unspecified options are
+    /// set to their defaults.
+    pub fn from_env() -> Self {
         Self {
             ip: env_str!(Variable::IP_KEY, "127.0.0.1"),
             port: env_num!(Variable::PORT_KEY, 8000),

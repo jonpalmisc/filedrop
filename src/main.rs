@@ -13,16 +13,17 @@ use axum::{
     Router, Server,
 };
 
-use std::{sync::Arc, env};
+use std::{env, sync::Arc};
 
 use crate::settings::Variable;
 
 /// Show usage information and exit.
+#[rustfmt::skip]
 fn show_usage_and_exit() -> ! {
     eprintln!("Minimal, CLI-friendly file transfer service\n");
 
     eprintln!("Options:");
-    eprintln!("  {:<22}IP to listen on", Variable::IP_KEY);
+    eprintln!("  {:<22}IP address to listen on", Variable::IP_KEY);
     eprintln!("  {:<22}Port to listen on", Variable::PORT_KEY);
     eprintln!("  {:<22}Host name to use in URLs", Variable::HOST_KEY);
     eprintln!("  {:<22}Path to upload storage directory", Variable::STORAGE_KEY);
@@ -36,7 +37,7 @@ fn show_usage_and_exit() -> ! {
 #[tokio::main]
 async fn main() {
     // Treat any arguments at all as a cry for help.
-    if let Some(_) = env::args().nth(1) {
+    if env::args().nth(1).is_some() {
         show_usage_and_exit();
     }
 
@@ -46,7 +47,7 @@ async fn main() {
         .finish();
     tracing::subscriber::set_global_default(trace_sub).unwrap();
 
-    let settings = Arc::new(Settings::load());
+    let settings = Arc::new(Settings::from_env());
     let listen_address = match settings.listen_address() {
         Ok(a) => a,
         _ => {
