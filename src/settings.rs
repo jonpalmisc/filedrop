@@ -22,6 +22,9 @@ pub struct Settings {
 
     /// Maximum request size.
     size_limit: usize,
+
+    /// Auto-remove files after download?
+    auto_remove: bool
 }
 
 /// Grouped environment variable name constants.
@@ -34,6 +37,7 @@ impl Variable {
     pub const HOST_KEY: &str = "FILEDROP_HOST";
     pub const STORAGE_KEY: &str = "FILEDROP_STORAGE";
     pub const SIZE_LIMIT_KEY: &str = "FILEDROP_SIZE_LIMIT";
+    pub const AUTO_REMOVE_KEY: &str = "FILEDROP_AUTO_REMOVE";
 }
 
 /// Get the value of an environment variable as a string.
@@ -66,6 +70,7 @@ impl Settings {
             host: env_str!(Variable::HOST_KEY, "localhost"),
             storage_path: env_str!(Variable::STORAGE_KEY, "storage"),
             size_limit: env_num!(Variable::SIZE_LIMIT_KEY, 50 * 1024 * 1024 /* 50 MiB */),
+            auto_remove: env_num!(Variable::AUTO_REMOVE_KEY, 0) != 0
         }
     }
 
@@ -96,5 +101,10 @@ impl Settings {
     /// Get the request size limit.
     pub fn size_limit(&self) -> usize {
         self.size_limit
+    }
+
+    /// Should files be auto-removed after download?
+    pub fn should_auto_remove(&self) -> bool {
+        self.auto_remove
     }
 }
