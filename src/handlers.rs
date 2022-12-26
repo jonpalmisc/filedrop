@@ -77,3 +77,15 @@ pub async fn download(
     info!("Sending file '{}'...", name);
     Ok(body)
 }
+
+pub async fn help(State(settings): State<Arc<Settings>>) -> impl IntoResponse {
+    info!("Got request at root, replying with help");
+
+    (
+        StatusCode::BAD_REQUEST,
+        format!(
+            "Use `curl -T {}` to upload files.\n",
+            settings.host_string()
+        ),
+    )
+}

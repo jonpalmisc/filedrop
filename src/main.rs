@@ -65,6 +65,7 @@ async fn main() {
     };
 
     let router = Router::new()
+        .route("/", get(handlers::help))
         .route("/:name", put(handlers::upload))
         .route("/get/:name", get(handlers::download))
         .layer(DefaultBodyLimit::max(settings.size_limit())) // 1 GB
