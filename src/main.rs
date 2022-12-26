@@ -4,6 +4,8 @@ mod settings;
 
 use settings::Settings;
 
+use dotenvy::dotenv;
+
 use tracing::{error, info, Level};
 use tracing_subscriber::FmtSubscriber;
 
@@ -25,6 +27,7 @@ fn show_usage_and_exit() -> ! {
     eprintln!("Options:");
     eprintln!("  {:<22}IP address to listen on", Variable::IP_KEY);
     eprintln!("  {:<22}Port to listen on", Variable::PORT_KEY);
+    eprintln!("  {:<22}Port to use in URLs (defaults to normal port)", Variable::PUBLIC_PORT_KEY);
     eprintln!("  {:<22}Host name to use in URLs", Variable::HOST_KEY);
     eprintln!("  {:<22}Path to upload storage directory", Variable::STORAGE_KEY);
     eprintln!("  {:<22}Upload size limit (in bytes)", Variable::SIZE_LIMIT_KEY);
@@ -40,6 +43,11 @@ async fn main() {
     if env::args().nth(1).is_some() {
         show_usage_and_exit();
     }
+
+    // Load variables from a `.env` file, if one exists. Result is intentionally
+    // ignored via `.ok()` since it doesn't really matter if there isn't one as
+    // variables can still be supplied by hand.
+    dotenv().ok();
 
     // Initialize logging subsystem.
     let trace_sub = FmtSubscriber::builder()
