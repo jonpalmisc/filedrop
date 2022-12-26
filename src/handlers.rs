@@ -23,7 +23,7 @@ pub async fn upload(
     Path(name): Path<String>,
     data: Bytes,
 ) -> impl IntoResponse {
-    info!("Handling upload request for '{}'...", name);
+    info!("Handling upload request for '{}'", name);
 
     let upload_error = (
         StatusCode::INTERNAL_SERVER_ERROR,
@@ -35,12 +35,12 @@ pub async fn upload(
     let mut dest_file = match File::create(&local_path) {
         Ok(f) => f,
         _ => {
-            error!("Failed to create output file '{}'.", local_path.display());
+            error!("Failed to create output file '{}'", local_path.display());
             return upload_error;
         }
     };
     if dest_file.write_all(&data).is_err() {
-        error!("Failed to write output file '{}'.", local_path.display());
+        error!("Failed to write output file '{}'", local_path.display());
         return upload_error;
     }
 
@@ -52,7 +52,7 @@ pub async fn upload(
         BANNER_RULE
     );
 
-    info!("Upload for '{}' completed.", output_name);
+    info!("Upload for '{}' completed", output_name);
     (StatusCode::CREATED, reply)
 }
 
@@ -60,13 +60,13 @@ pub async fn download(
     State(settings): State<Arc<Settings>>,
     Path(name): Path<String>,
 ) -> impl IntoResponse {
-    info!("Handling download request for '{}'...", name);
+    info!("Handling download request for '{}'", name);
 
     let path = settings.storage_path().join(name.clone());
     let file = match AsyncFile::open(path).await {
         Ok(file) => file,
         _ => {
-            warn!("Unknown file '{}' requested.", name);
+            warn!("Unknown file '{}' requested", name);
             return Err((StatusCode::NOT_FOUND, "Not found.\n"));
         }
     };
@@ -74,7 +74,7 @@ pub async fn download(
     let stream = ReaderStream::new(file);
     let body = StreamBody::new(stream);
 
-    info!("Sending file '{}'...", name);
+    info!("Sending file '{}'", name);
     Ok(body)
 }
 

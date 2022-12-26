@@ -59,7 +59,7 @@ async fn main() {
     let listen_address = match settings.listen_address() {
         Ok(a) => a,
         _ => {
-            error!("Failed to parse listen address.");
+            error!("Failed to parse listen address");
             return;
         }
     };
@@ -72,12 +72,12 @@ async fn main() {
         .with_state(settings.clone());
 
     info!(
-        "Listening on {} ({})...",
+        "Listening on {} ({})",
         settings.listen_string(),
         settings.host_string()
     );
     info!(
-        "Files will be served from and saved to '{}'.",
+        "Files will be served from and saved to '{}'",
         settings.storage_path().display()
     );
 
