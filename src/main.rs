@@ -6,7 +6,7 @@ use settings::Settings;
 
 use dotenvy::dotenv;
 
-use tracing::{error, info, Level};
+use tracing::{error, info, warn, Level};
 use tracing_subscriber::FmtSubscriber;
 
 use axum::{
@@ -15,7 +15,7 @@ use axum::{
     Router, Server,
 };
 
-use std::{env, sync::Arc};
+use std::{env, path::Path, sync::Arc};
 
 use crate::settings::Variable;
 
@@ -63,6 +63,16 @@ async fn main() {
             return;
         }
     };
+
+    // Warn if the storage directory does not exist. It is the user's
+    // responsibility to create the storage directory; for simplicity and
+    // security purposes, Filedrop should not be auto-creating directories.
+    if !Path::new(&settings.storage_path()).is_dir() {
+        warn!(
+            "Storage directory '{}' does not exist, transfers may fail",
+            &settings.storage_path().display()
+        );
+    }
 
     let router = Router::new()
         .route("/", get(handlers::help))
