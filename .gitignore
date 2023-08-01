@@ -1,7 +1,2 @@
-/target
-
-public/
-storage/
-
-filedrop.toml
+__pycache__/
 .env

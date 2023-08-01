@@ -5,10 +5,10 @@ facilitate quick file uploads/downloads from the terminal.
 
 ## Security
 
-This is alpha software at best. It was written in a few hours. There are ZERO
-security checks. It is your responsibility to secure the environment Filedrop
-runs in. At a minumum, containerizing Filedrop with Docker using the provided
-Dockerfile is recommended.
+This is alpha software at best. It was written in about 30 minutes. There are
+ZERO security checks. It is your responsibility to sandbox Filedrop and/or
+secure the environment it runs in. At a minumum, containerizing Filedrop with
+Docker using the provided Dockerfile is recommended.
 
 Do **NOT** use this in production yet. Seriously.
 
@@ -26,26 +26,25 @@ command needed to retrieve the file; you can send this to the intended
 recipient. A sample response is shown below.
 
 ```
-curl -O http://filedrop.example.org/get/962F3F8D90A8-example.txt
+curl http://filedrop.example.org/5WyQxQu6XAoh >example.txt
 ```
 
 > The URL shown in the `curl` command can also be accessed via the browser.
 
-As seen above, random prefixes are prepended to uploaded file names to prevent
-naming conflicts and the ability to guess filenames.
-
 ## Deployment
 
-Use `cargo` to build Filedrop, then run the resulting `filedrop` executable to
-start the server. Filedrop can be configured through a handful of environment
-variables; run `filedrop -h` for more information.
+To run Filedrop during development, the following should be sufficient:
 
-For convenience, Filedrop can also be built as a Docker image and containerized
-using the provided Dockerfile.
+```sh
+poetry install
+poetry run uvicorn filedrop:app
+```
+
+Alternatively, you may build and run the Docker image.
 
 ## License
 
-Copyright &copy; 2022 Jon Palmisciano. All rights reserved.
+Copyright &copy; 2022&ndash;2023 Jon Palmisciano. All rights reserved.
 
 Use of this source code is governed by the BSD 3-Clause license; a full copy of
 the license can be found in the [LICENSE.txt](LICENSE.txt) file.
